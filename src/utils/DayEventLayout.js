@@ -25,6 +25,13 @@ class Event {
    * The event's width without any overlap.
    */
   get _width() {
+    if (this.container && this.container.end <= this.start) {
+      return 100
+    }
+    // if (this.row && this.row.leaves.length == 0) {
+    //   return 100;
+    // }
+
     // The container event's width is determined by the maximum number of
     // events in any of its rows.
     if (this.rows) {
@@ -33,11 +40,11 @@ class Event {
           (max, row) => Math.max(max, row.leaves.length + 1), // add itself
           0
         ) + 1 // add the container
-
       return 100 / columns
     }
 
-    let availableWidth = 100 - this.container._width
+
+    let availableWidth = 100 - this.container._width;
 
     // @BACKGROUND-EVENTS-HACK
     if (
@@ -97,12 +104,18 @@ class Event {
     if (this.rows) return 0
 
     // Rows always start where their container ends.
-    if (this.leaves) return this.container._width
-
-    // Leaves are spread out evenly on the space left by its row.
-    const { leaves, xOffset, _width } = this.row
-    const index = leaves.indexOf(this) + 1
-    return xOffset + index * _width
+    if (this.container && this.container.end > this.start) {
+      return this.container._width
+    }
+    try {
+      // Leaves are spread out evenly on the space left by its row.
+      const { leaves, xOffset, _width } = this.row
+      const index = leaves.indexOf(this) + 1
+      return xOffset + index * _width
+    }
+    catch (e) {
+      return 0;
+    }
   }
 }
 

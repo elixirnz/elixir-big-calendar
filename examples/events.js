@@ -97,4 +97,25 @@ export default [
     start: new Date(new Date().setHours(new Date().getHours() - 3)),
     end: new Date(new Date().setHours(new Date().getHours() + 3)),
   },
+  {
+    id   : 15,
+    title: 'Tzatziki 0',
+    start: new Date('2015-04-01T09:00:00Z'),
+    end  : new Date('2015-04-01T09:15:00Z'),
+    desc : 'Power lunch',
+  },
+  {
+    id   : 16,
+    title: 'Tzatziki 1',
+    start: new Date('2015-04-01T09:15:00Z'),
+    end  : new Date('2015-04-01T09:30:00Z'),
+    desc : 'Power lunch',
+  },
+  {
+    id   : 17,
+    title: 'Tzatziki 2',
+    start: new Date('2015-04-01T09:30:00Z'),
+    end  : new Date('2015-04-01T09:45:00Z'),
+    desc : 'Power lunch',
+  },
 ]

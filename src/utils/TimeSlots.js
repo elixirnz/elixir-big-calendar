@@ -11,7 +11,8 @@ const getKey = (min, max, step, slots) =>
 export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
   const key = getKey(start, end, step, timeslots)
 
-  const totalMin = dates.diff(start, end, 'minutes') + getDstOffset(start, end)
+  const totalMin = dates.diff(start, end, 'minutes') 
+    + getDstOffset(start, end)
   const minutesFromMidnight = dates.diff(
     dates.startOf(start, 'day'),
     start,
@@ -103,19 +104,19 @@ export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
     },
     getRange(rangeStart, rangeEnd) {
       rangeStart = dates.min(end, dates.max(start, rangeStart))
-      rangeEnd = dates.min(end, dates.max(start, rangeEnd))
+      rangeEnd   = dates.min(end, dates.max(start, rangeEnd))
 
       const rangeStartMin = positionFromDate(rangeStart)
-      const rangeEndMin = positionFromDate(rangeEnd)
-      const top = (rangeStartMin / totalMin) * 100
+      const rangeEndMin   = positionFromDate(rangeEnd)
+      const top           = (rangeStartMin / totalMin) * 100
 
       return {
         top,
-        height: (rangeEndMin / totalMin) * 100 - top,
-        start: positionFromDate(rangeStart),
+        height   : (rangeEndMin / totalMin) * 100 - top,
+        start    : rangeStartMin,
         startDate: rangeStart,
-        end: positionFromDate(rangeEnd),
-        endDate: rangeEnd,
+        end      : rangeEndMin,
+        endDate  : rangeEnd,
       }
     },
   }

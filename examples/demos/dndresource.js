@@ -92,6 +92,8 @@ class Dnd extends React.Component {
         selectable
         events={this.state.events}
         onEventDrop={this.moveEvent}
+        min={new Date('2011-01-01T06:15:00Z')}
+        max={new Date('2011-01-01T10:30:00Z')}
         resizable
         resources={resourceMap}
         resourceIdAccessor="resourceId"
