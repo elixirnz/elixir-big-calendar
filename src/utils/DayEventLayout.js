@@ -26,7 +26,7 @@ class Event {
    */
   get _width() {
     if (this.container && this.container.end <= this.start) {
-      return 100
+      return 100-this.xOffset
     }
     // if (this.row && this.row.leaves.length == 0) {
     //   return 100;
@@ -104,7 +104,8 @@ class Event {
     if (this.rows) return 0
 
     // Rows always start where their container ends.
-    if (this.container && this.container.end > this.start) {
+    if (this.container && this.container.end > this.start
+        && !this.row) {
       return this.container._width
     }
     try {
