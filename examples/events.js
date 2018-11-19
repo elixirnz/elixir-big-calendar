@@ -99,23 +99,45 @@ export default [
   },
   {
     id   : 15,
-    title: 'Tzatziki 0',
+    title: 'EEEEEEEE 0',
     start: new Date('2015-04-01T09:00:00Z'),
     end  : new Date('2015-04-01T09:15:00Z'),
     desc : 'Power lunch',
   },
   {
     id   : 16,
-    title: 'Tzatziki 1',
+    title: 'EEEEEEEE 1',
     start: new Date('2015-04-01T09:15:00Z'),
     end  : new Date('2015-04-01T09:30:00Z'),
     desc : 'Power lunch',
   },
   {
     id   : 17,
-    title: 'Tzatziki 2',
+    title: 'EEEEEEEE 2',
     start: new Date('2015-04-01T09:30:00Z'),
     end  : new Date('2015-04-01T09:45:00Z'),
     desc : 'Power lunch',
+  },
+
+  {
+    id   : 18,
+    title: 'EEEEEEEE 3',
+    start: new Date('2015-04-01T09:40:00Z'),
+    end  : new Date('2015-04-01T10:00:00Z'),
+    desc : 'Power lunch',
+  },/*
+  {
+    id   : 19,
+    title: 'EEEEEEEE 4',
+    start: new Date('2015-04-01T08:45:00Z'),
+    end  : new Date('2015-04-01T10:30:00Z'),
+    desc : 'All embedding',
+  },*/
+  {
+    id   : 20,
+    title: 'EEEEEEEE 5',
+    start: new Date('2015-04-01T09:45:00Z'),
+    end  : new Date('2015-04-01T10:00:00Z'),
+    desc : '',
   },
 ]

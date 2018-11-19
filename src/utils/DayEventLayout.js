@@ -167,6 +167,8 @@ function getStyledEvents({ events, ...props }) {
   const proxies = events.map(event => new Event(event, props))
   const eventsInRenderOrder = sortByRender(proxies)
 
+  console.log("styledEvents:", eventsInRenderOrder)
+
   // Group overlapping events, while keeping order.
   // Every event is always one of: container, row or leaf.
   // Containers can contain rows, and rows can contain leaves.
@@ -185,6 +187,7 @@ function getStyledEvents({ events, ...props }) {
       containerEvents.push(event)
       continue
     }
+
 
     // Found a container for the event.
     event.container = container
@@ -205,7 +208,10 @@ function getStyledEvents({ events, ...props }) {
     } else {
       // Couldn't find a row – that means this event is a row.
       event.leaves = []
-      container.rows.push(event)
+      if (container.startMs < event.startMs &&
+          container.endMs > event.startMs) {
+        container.rows.push(event)
+      }
     }
   }
 
