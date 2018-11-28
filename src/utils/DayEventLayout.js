@@ -105,7 +105,7 @@ class Event {
 
     // Rows always start where their container ends.
     if (this.container && this.container.end > this.start
-        && !this.row) {
+      && !this.row) {
       return this.container._width
     }
     try {
@@ -209,7 +209,7 @@ function getStyledEvents({ events, ...props }) {
     } else {
       // Couldn't find a row – that means this event is a row.
       event.leaves = []
-      if (container.startMs < event.startMs &&
+      if (container.startMs <= event.startMs &&
           container.endMs > event.startMs) {
         container.rows.push(event)
       }

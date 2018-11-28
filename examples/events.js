@@ -100,7 +100,7 @@ export default [
     start: new Date(new Date().setHours(new Date().getHours() - 3)),
     end: new Date(new Date().setHours(new Date().getHours() + 3)),
   },
-  {
+ /* {
     id   : idc++,
     title: 'EEEEEEEE 0',
     start: new Date('2015-04-01T09:00:00Z'),
@@ -136,27 +136,27 @@ export default [
     end  : new Date('2015-04-01T10:00:00Z'),
     desc : '',
   },
+*/
 
 
-
-  {
+  /*{
     id   : idc++,
     title: 'AAA 0',
-    start: new Date('2015-04-01T06:15:00Z'),
-    end  : new Date('2015-04-01T08:00:00Z'),
+    start: new Date('2015-04-01T06:30:00Z'),
+    end  : new Date('2015-04-01T07:00:00Z'),
     desc : 'All embedding',
   },
   {
     id   : idc++,
     title: 'AAA 1',
-    start: new Date('2015-04-01T06:30:00Z'),
-    end  : new Date('2015-04-01T07:45:00Z'),
+    start: new Date('2015-04-01T06:45:00Z'),
+    end  : new Date('2015-04-01T07:00:00Z'),
     desc : 'All embedding',
   },
-  {
+ */ {
     id   : idc++,
     title: 'AAA 2',
-    start: new Date('2015-04-01T06:45:00Z'),
+    start: new Date('2015-04-01T07:00:00Z'),
     end  : new Date('2015-04-01T07:30:00Z'),
     desc : 'All embedding',
   },
