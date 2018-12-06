@@ -26,7 +26,7 @@ class Event {
    */
   get _width() {
     if (this.container && this.container.end <= this.start) {
-      return 100-this.xOffset
+      return 100 - this.xOffset
     }
     // if (this.row && this.row.leaves.length == 0) {
     //   return 100;
@@ -43,8 +43,7 @@ class Event {
       return 100 / columns
     }
 
-
-    let availableWidth = 100 - this.container._width;
+    let availableWidth = 100 - this.container._width
 
     // @BACKGROUND-EVENTS-HACK
     if (
@@ -104,8 +103,7 @@ class Event {
     if (this.rows) return 0
 
     // Rows always start where their container ends.
-    if (this.container && this.container.end > this.start
-      && !this.row) {
+    if (this.container && this.container.end > this.start && !this.row) {
       return this.container._width
     }
     try {
@@ -113,9 +111,8 @@ class Event {
       const { leaves, xOffset, _width } = this.row
       const index = leaves.indexOf(this) + 1
       return xOffset + index * _width
-    }
-    catch (e) {
-      return 0;
+    } catch (e) {
+      return 0
     }
   }
 }
@@ -168,7 +165,7 @@ function getStyledEvents({ events, ...props }) {
   const proxies = events.map(event => new Event(event, props))
   const eventsInRenderOrder = sortByRender(proxies)
 
-  console.log("styledEvents:", eventsInRenderOrder)
+  console.log('styledEvents:', eventsInRenderOrder)
 
   // Group overlapping events, while keeping order.
   // Every event is always one of: container, row or leaf.
@@ -179,7 +176,8 @@ function getStyledEvents({ events, ...props }) {
 
     // Check if this event can go into a container event.
     const container = containerEvents.find(
-      c => c.end > event.start || Math.abs(event.start - c.start) < 30
+      c => c.end > event.start
+      /*|| Math.abs(event.start - c.start) < 30*/
     )
 
     // Couldn't find a container — that means this event is a container.
@@ -188,7 +186,6 @@ function getStyledEvents({ events, ...props }) {
       containerEvents.push(event)
       continue
     }
-
 
     // Found a container for the event.
     event.container = container
@@ -209,8 +206,10 @@ function getStyledEvents({ events, ...props }) {
     } else {
       // Couldn't find a row – that means this event is a row.
       event.leaves = []
-      if (container.startMs <= event.startMs &&
-          container.endMs > event.startMs) {
+      if (
+        container.startMs <= event.startMs &&
+        container.endMs > event.startMs
+      ) {
         container.rows.push(event)
       }
     }

@@ -1,4 +1,3 @@
-
 let idc = 0
 
 export default [
@@ -100,7 +99,7 @@ export default [
     start: new Date(new Date().setHours(new Date().getHours() - 3)),
     end: new Date(new Date().setHours(new Date().getHours() + 3)),
   },
- /* {
+  /* {
     id   : idc++,
     title: 'EEEEEEEE 0',
     start: new Date('2015-04-01T09:00:00Z'),
@@ -138,7 +137,6 @@ export default [
   },
 */
 
-
   /*{
     id   : idc++,
     title: 'AAA 0',
@@ -154,17 +152,38 @@ export default [
     desc : 'All embedding',
   },
  */ {
-    id   : idc++,
+    id: idc++,
     title: 'AAA 2',
-    start: new Date('2015-04-01T07:00:00Z'),
-    end  : new Date('2015-04-01T07:30:00Z'),
-    desc : 'All embedding',
+    start: new Date('2015-04-01T06:15:00Z'),
+    end: new Date('2015-04-01T08:00:00Z'),
+    desc: 'All embedding',
   },
   {
-    id   : idc++,
-    title: 'AAA 3',
+    id: idc++,
+    title: 'AAA 2',
+    start: new Date('2015-04-01T06:00:00Z'),
+    end: new Date('2015-04-01T08:15:00Z'),
+    desc: 'All embedding',
+  },
+  {
+    id: idc++,
+    title: 'AAA 2',
     start: new Date('2015-04-01T07:00:00Z'),
-    end  : new Date('2015-04-01T07:15:00Z'),
-    desc : 'All embedding',
+    end: new Date('2015-04-01T07:15:00Z'),
+    desc: 'All embedding',
+  },
+  {
+    id: idc++,
+    title: 'AAA 3',
+    start: new Date('2015-04-01T07:15:00Z'),
+    end: new Date('2015-04-01T07:30:00Z'),
+    desc: 'All embedding',
+  },
+  {
+    id: idc++,
+    title: 'AAA 4',
+    start: new Date('2015-04-01T07:15:00Z'),
+    end: new Date('2015-04-01T07:30:00Z'),
+    desc: 'All embedding',
   },
 ]
