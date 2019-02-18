@@ -74,57 +74,47 @@ function sortByRender(events) {
   return sorted
 }
 
-function getStyledEvents({ events, ...props }) {
- 
-
-  const proxies = events.map(event => new Event(event, props))
-  let eventsInRenderOrder = sortByRender(proxies)
-
-  let EV = eventsInRenderOrder // just a shorthand
+function alignEvents(EV) {
 
 
-  EV = EV.sort((a,b) => {
-    if (a.start < b.start) return -1;
-    if (a.start > b.start) return 1;
-    return 0;
-  }).filter(e => !(e.data && e.data.$rendering === 'background'))
+  const playTetrisWithEvents = EV => {
+    for (let e of EV) e.level = 999999;
 
+    const eventsByLevel = { 0: [EV[0]] }
+    EV[0].level = 0;
 
-  // TETRIS DOWN EVENTS
+    for (let i = 1; i < EV.length; ++i) {
 
-  for (let e of EV) e.level = 999999;
+      // find closest intersecting "brick", onto which we'll put the incoming "brick"
+      let closest = null;
 
-  const eventsByLevel = { 0: [EV[0]] }
-  EV[0].level = 0;
+      for (let j = i-1; j >= 0; --j) {
 
-  for (let i = 1; i < EV.length; ++i) {
+        if ( EV[j].intersects(EV[i]) != NOINT ) {
 
-    // find closest intersecting "brick", onto which we'll put the incoming "brick"
-    let closest = null;
-
-    for (let j = i-1; j >= 0; --j) {
-
-      if ( EV[j].intersects(EV[i]) != NOINT ) {
-
-        if (!closest) {
-          closest = EV[ j ];
-        } else 
-        if (closest.level < EV[ j ].level) {
-          closest = EV[ j ]
+          if (!closest) {
+            closest = EV[ j ];
+          } else 
+          if (closest.level < EV[ j ].level) {
+            closest = EV[ j ]
+          }
         }
       }
+
+      if (closest) {
+        EV[i].level = closest.level + 1; // we hit a "brick", put it on top
+      } else {
+        EV[i].level = 0; // we hit the floor
+      }
+
+      eventsByLevel[EV[i].level] = (eventsByLevel[EV[i].level] || []);
+      eventsByLevel[EV[i].level].push(EV[i])
+
     }
-
-    if (closest) {
-      EV[i].level = closest.level + 1; // we hit a "brick", put it on top
-    } else {
-      EV[i].level = 0; // we hit the floor
-    }
-
-    eventsByLevel[EV[i].level] = (eventsByLevel[EV[i].level] || []);
-    eventsByLevel[EV[i].level].push(EV[i])
-
+    return eventsByLevel
   }
+
+  const eventsByLevel = playTetrisWithEvents(EV)
 
 
   // Moving from bottom to top, try fitting upper level bricks into holes
@@ -268,7 +258,7 @@ function getStyledEvents({ events, ...props }) {
   const calculateDimensions = (EV, eventsByLevel) => {
     const numLevels = Object.keys(eventsByLevel).length
 
-    let overlapWidth = 0.2;
+    let overlapWidth = 0 * 0.2;
 
     for (let ev of EV) {
       ev.width = (100/numLevels);
@@ -296,7 +286,28 @@ function getStyledEvents({ events, ...props }) {
 
   calculateDimensions(EV, eventsByLevel);
 
+  return EV
+}
 
+function getStyledEvents({ events, ...props }) {
+ 
+
+  const proxies = events.map(event => new Event(event, props))
+  let eventsInRenderOrder = sortByRender(proxies)
+
+  let EV = eventsInRenderOrder // just a shorthand
+
+
+  EV = EV.sort((a,b) => {
+    if (a.start < b.start) return -1;
+    if (a.start > b.start) return 1;
+    return 0;
+  }).filter(e => !(e.data && e.data.$rendering === 'background'))
+
+
+  // TETRIS DOWN EVENTS
+
+  if (EV.length > 0) EV = alignEvents(EV)
 
   // background events span 0 to 100
   const bgEvents = eventsInRenderOrder.filter(e => (e.data && e.data.$rendering === 'background'))
