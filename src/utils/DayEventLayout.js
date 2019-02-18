@@ -26,9 +26,8 @@ class Event {
     this.height = height
     this.data = data
 
-    this.parent = null;
-    this.colIndex = 0;
-    this.numCols = 1;
+    this.parents = []     // "bricks" on which this lies on
+    this.children = []    // "bricks" that lie on this one
   }
 
 
@@ -42,162 +41,8 @@ class Event {
     return NOINT;
   }
 
-  hasSpaceUnderFor(event) {
-    if (this.parent == null || this.colIndex == 0) return null;
-    
-    let p = this;
-    while (p = p.parent) {
-      if (p.intersects(event) == NOINT) {
-        return p;
-      }
-    }
-  }
-
-  getFirstIntersectingAscendent(event) {
-    let p = this
-    do {
-      if ([
-        OTHER_STARTS_LATER, OTHER_STARTS_SAMETIME
-        ].includes(p.intersects(event))) 
-      {
-        return p
-      }
-    } while ( p = p.parent )
-  }
-
-  addToEventTree(event) {
-    event.parent = this;
-
-    const theEventAbove = this.hasSpaceUnderFor(event)
-    if (theEventAbove) {
-      event.colIndex = theEventAbove.colIndex; 
-    } else {
-
-      let p = this;
-      do {
-        p.numCols++;
-      } while ( p = p.parent );
-      event.colIndex = this.colIndex + 1; 
-    }
-    event.numCols = this.numCols;
-  }
-
-  /**
-   * The event's width without any overlap.
-   */
- /* get _width() {
-
-    // @BACKGROUND-EVENTS-HACK
-    if (
-      this.data &&
-      this.data.$rendering === 'background'
-    ) {
-      return 100
-    }
-    // @BACKGROUND-EVENTS-HACK
-
-    if (this.container && this.container.end <= this.start) {
-      return 100 - this.xOffset
-    }
-    // if (this.row && this.row.leaves.length == 0) {
-    //   return 100;
-    // }
-
-    // The container event's width is determined by the maximum number of
-    // events in any of its rows.
-    if (this.rows) {
-      const columns =
-        this.rows.reduce(
-          (max, row) => Math.max(max, row.leaves.length + 1), // add itself
-          0
-        ) + 1 // add the container
-      return 100 / columns
-    }
-
-    let availableWidth = 100 - this.container._width
-
-    // The row event's width is the space left by the container, divided
-    // among itself and its leaves.
-    if (this.leaves) {
-      return availableWidth / (this.leaves.length + 1)
-    }
-
-    // The leaf event's width is determined by its row's width
-    return this.row._width
-  }
-*/
-  /**
-   * The event's calculated width, possibly with extra width added for
-   * overlapping effect.
-   */
- /* get width() {
-    // @BACKGROUND-EVENTS-HACK
-    if (
-      this.data &&
-      this.data.$rendering === 'background'
-    ) {
-      return 100
-    }
-    // @BACKGROUND-EVENTS-HACK
-
-    const noOverlap = this._width
-    const overlap = Math.min(100, this._width * 1.7)
-
-    // Containers can always grow.
-    if (this.rows) {
-      return overlap
-    }
-
-    // Rows can grow if they have leaves.
-    if (this.leaves) {
-      return this.leaves.length > 0 ? overlap : noOverlap
-    }
-
-    // Leaves can grow unless they're the last item in a row.
-    const { leaves } = this.row
-    const index = leaves.indexOf(this)
-    return index === leaves.length - 1 ? noOverlap : overlap
-  }
-
-  get xOffset() {
-    // @BACKGROUND-EVENTS-HACK
-    if (
-      this.data &&
-      this.data.$rendering === 'background'
-    ) {
-      return 0
-    }
-    // @BACKGROUND-EVENTS-HACK
-
-    // Containers have no offset.
-    if (this.rows) return 0
-
-    // Rows always start where their container ends.
-    if (this.container && this.container.end > this.start && !this.row) {
-      return this.container._width
-    }
-    try {
-      // Leaves are spread out evenly on the space left by its row.
-      const { leaves, xOffset, _width } = this.row
-      const index = leaves.indexOf(this) + 1
-      return xOffset + index * _width
-    } catch (e) {
-      return 0
-    }
-  }
-  */
 }
-/**
- * Return true if event a and b is considered to be on the same row.
- */
-function onSameRow(a, b) {
-  return (
-    // Occupies the same start slot.
-    Math.abs(b.start - a.start) < 15 ||
-    // A's start slot overlaps with b's end slot.
-    (b.start > a.start && b.start < a.end)
-  )
-}
+
 
 function sortByRender(events) {
   const sortedByTime = sortBy(events, ['startMs', e => -e.endMs])
@@ -230,99 +75,243 @@ function sortByRender(events) {
 }
 
 function getStyledEvents({ events, ...props }) {
-  /*// Create proxy events and order them so that we don't have
-  // to fiddle with z-indexes.
-  const proxies = events.map(event => new Event(event, props))
-  const eventsInRenderOrder = sortByRender(proxies)
-
-  console.log('styledEvents:', eventsInRenderOrder)
-
-  // Group overlapping events, while keeping order.
-  // Every event is always one of: container, row or leaf.
-  // Containers can contain rows, and rows can contain leaves.
-  const containerEvents = []
-  for (let i = 0; i < eventsInRenderOrder.length; i++) {
-    const event = eventsInRenderOrder[i]
-
-    // Check if this event can go into a container event.
-    const container = containerEvents.find(
-      c => c.end > event.start
-      //|| Math.abs(event.start - c.start) < 30
-    )
-
-    // Couldn't find a container — that means this event is a container.
-    if (!container) {
-      event.rows = []
-      containerEvents.push(event)
-      continue
-    }
-
-    // Found a container for the event.
-    event.container = container
-
-    // Check if the event can be placed in an existing row.
-    // Start looking from behind.
-    let row = null
-    for (let j = container.rows.length - 1; !row && j >= 0; j--) {
-      if (onSameRow(container.rows[j], event)) {
-        row = container.rows[j]
-      }
-    }
-
-    if (row) {
-      // Found a row, so add it.
-      row.leaves.push(event)
-      event.row = row
-    } else {
-      // Couldn't find a row – that means this event is a row.
-      event.leaves = []
-      if (
-        container.startMs <= event.startMs &&
-        container.endMs > event.startMs
-      ) {
-        container.rows.push(event)
-      }
-    }
-  }
-*/
-
+ 
 
   const proxies = events.map(event => new Event(event, props))
   let eventsInRenderOrder = sortByRender(proxies)
 
   let EV = eventsInRenderOrder // just a shorthand
 
+
   EV = EV.sort((a,b) => {
     if (a.start < b.start) return -1;
     if (a.start > b.start) return 1;
     return 0;
-  })
-  for (let i = 0; i < EV.length; ++i) {
+  }).filter(e => !(e.data && e.data.$rendering === 'background'))
 
-    //const intersectingEvent = EV[i].getFirstIntersectingAscendent(EV[i+1])
 
-    let intersectingEvent = null;
+  // TETRIS DOWN EVENTS
+
+  for (let e of EV) e.level = 999999;
+
+  const eventsByLevel = { 0: [EV[0]] }
+  EV[0].level = 0;
+
+  for (let i = 1; i < EV.length; ++i) {
+
+    // find closest intersecting "brick", onto which we'll put the incoming "brick"
+    let closest = null;
+
     for (let j = i-1; j >= 0; --j) {
-      if ([
-        OTHER_STARTS_LATER, OTHER_STARTS_SAMETIME
-        ].includes(EV[j].intersects(EV[i]))) 
-      {
-        intersectingEvent = EV[j]
-        break;
+
+      if ( EV[j].intersects(EV[i]) != NOINT ) {
+
+        if (!closest) {
+          closest = EV[ j ];
+        } else 
+        if (closest.level < EV[ j ].level) {
+          closest = EV[ j ]
+        }
       }
     }
 
-    if (intersectingEvent) {
-      intersectingEvent.addToEventTree(EV[i])
-      continue;
+    if (closest) {
+      EV[i].level = closest.level + 1; // we hit a "brick", put it on top
+    } else {
+      EV[i].level = 0; // we hit the floor
+    }
+
+    eventsByLevel[EV[i].level] = (eventsByLevel[EV[i].level] || []);
+    eventsByLevel[EV[i].level].push(EV[i])
+
+  }
+
+
+  // Moving from bottom to top, try fitting upper level bricks into holes
+  
+  const fillHoles = eventsByLevel => {
+    const intersectsWithAnyEventOnThisLevel = (thisLevel, upperLevelEvent) => {
+      return eventsByLevel[thisLevel].findIndex(e => e.intersects(upperLevelEvent) != NOINT) != -1
+    }
+    
+    const numLevels = Object.keys(eventsByLevel).length
+
+    for (let i = 0; i < numLevels-1; ++i) {
+
+      for (let j = i + 1; j < numLevels; ++j) {
+
+        const upperLevel = eventsByLevel[ j ]
+
+        for (let k = 0; k < upperLevel.length; ++k) {
+          if (!intersectsWithAnyEventOnThisLevel(i, upperLevel[k])) {
+            // move event down to this level
+            upperLevel[k].level = i;
+            eventsByLevel[i].push(upperLevel[k])
+            upperLevel.splice(k, 1)
+            k--;
+          }
+        }
+      }
     }
   }
 
-  for (let e of EV) {
-    e.xOffset = (100 / e.numCols) * e.colIndex;
-    e.width = (100 / e.numCols)
+  fillHoles(eventsByLevel);
 
-    // stretch events to the right
+  const cleanupEventsByLevel = eventsByLevel => {
+    for (let levelIndex in eventsByLevel) {
+      if (eventsByLevel[levelIndex].length == 0) {
+        delete eventsByLevel[levelIndex]
+      }
+    }
+  }
+
+  cleanupEventsByLevel(eventsByLevel)
+
+  const assemblyIntersectionGraph = eventsByLevel => {
+
+    const localPeaks = []
+
+    const numLevels = Object.keys(eventsByLevel).length
+
+    for (let curLevel = 0; curLevel < numLevels - 1; ++curLevel) {
+
+      for (let i = 0; i < eventsByLevel[curLevel].length; ++i) {
+
+        const lowerEvent = eventsByLevel[curLevel][i]
+
+        const childEvents = eventsByLevel[curLevel+1].filter(e => lowerEvent.intersects(e) != NOINT)
+
+        lowerEvent.children.push(...childEvents)
+        for (let ce of childEvents) ce.parents.push(lowerEvent)
+
+        if (childEvents.length == 0 && curLevel + 1 < numLevels) {
+          lowerEvent.localPeak = true;
+          localPeaks.push(lowerEvent)
+        }
+      }
+
+    }
+
+    return localPeaks;
+  }
+
+  const localPeaks = assemblyIntersectionGraph(eventsByLevel)
+
+  console.log(eventsByLevel)
+
+  const intersectWithUpperLevelEvents = (event, currentLevel, eventsByLevel) => {
+    const numLevels = Object.keys(eventsByLevel).length
+
+    for (let i = currentLevel + 1; i < numLevels; ++i) {
+      const intersectingEvent = eventsByLevel[i].find(e => e.intersects(event) != NOINT)
+      if (intersectingEvent) {
+        return intersectingEvent
+      }
+    }
+
+    return null;
+  }
+
+
+  const markStretchableEvents = (eventsByLevel, localPeaks) => {
+    const numLevels = Object.keys(eventsByLevel).length
+
+    for (let i = numLevels - 2; i >= 0; --i) {
+      const levelEvents = eventsByLevel[i]
+
+      for (let j = 0; j < levelEvents.length; ++j) {
+
+        if (levelEvents[j].localPeak) {
+          levelEvents[j].stretchable = true;
+          levelEvents[j].localPeakHeight = 1;
+
+          // find closest intersection on upper levelEvents
+          const intersectingEvent = intersectWithUpperLevelEvents(levelEvents[j], i, eventsByLevel)
+          if (intersectingEvent) {
+            levelEvents[j].numLevelsToStretch = intersectingEvent.level - 1 - i ; // @FIXME: +-1?
+          } else {
+            levelEvents[j].numLevelsToStretch = (numLevels - 1) - i // @FIXME or num Levels?
+          }
+
+        } else {
+          const allChildrenStretchable = levelEvents[j].children.findIndex(e => !e.stretchable) == -1;
+
+          if (allChildrenStretchable) {
+            levelEvents[j].stretchable = true;
+
+            // find child that can stretch the least
+            let leastLevelsToStretch = 9999;
+            for (let c of levelEvents[j].children) {
+              leastLevelsToStretch = Math.min(c.numLevelsToStretch, leastLevelsToStretch)
+            }
+
+            // find max local peak height
+            let maxLocalPeakHeight = 0;
+            for (let c of levelEvents[j].children) {
+              maxLocalPeakHeight = Math.max(c.localPeakHeight, maxLocalPeakHeight)
+            }
+
+            levelEvents[j].localPeakHeight = maxLocalPeakHeight + 1;
+            levelEvents[j].numLevelsToStretch = leastLevelsToStretch;
+          }
+        }
+
+      }
+
+    }
+
+  }
+
+  markStretchableEvents(eventsByLevel, localPeaks)
+
+
+  const calculateDimensions = (EV, eventsByLevel) => {
+    const numLevels = Object.keys(eventsByLevel).length
+
+    let overlapWidth = 0.2;
+
+    for (let ev of EV) {
+      ev.width = (100/numLevels);
+      ev.xOffset = (100/numLevels*(1-overlapWidth)) * ev.level;
+    }
+
+    for (let curLevel = 0; curLevel < numLevels; ++curLevel) {
+      const events = eventsByLevel[curLevel]
+
+      for (let ev of events) {
+        if (ev.stretchable) {
+          const s = 1 + ev.numLevelsToStretch / ev.localPeakHeight;
+
+          ev.width = (100/numLevels) * s;
+          ev.xOffset = (100/numLevels*(1-overlapWidth)) * ev.level * s;
+
+          // propagate localPeakHeight correctly back to top
+          for (let c of ev.children) {
+            c.localPeakHeight = ev.localPeakHeight;
+          }
+        }
+      }
+    }
+  }
+
+  calculateDimensions(EV, eventsByLevel);
+
+
+
+  // background events span 0 to 100
+  const bgEvents = eventsInRenderOrder.filter(e => (e.data && e.data.$rendering === 'background'))
+  for (let e of bgEvents) {
+    e.xOffset = 0;
+    e.width = 100;
+  }
+
+  /*for (let e of EV) {
+    e.xOffset = 20 * e.level;
+    e.width = 20;
+    //e.xOffset = (100 / e.numCols) * e.colIndex;
+    //e.width = (100 / e.numCols)
+
+  /*  // stretch events to the right
     const rightNeighbor = EV.find(cev => cev.intersects(e) != NOINT && cev.colIndex > e.colIndex)
     if (!rightNeighbor) {
       e.width = (100 - e.xOffset)
@@ -337,10 +326,9 @@ function getStyledEvents({ events, ...props }) {
     if (maxX < e.xOffset) {
       e.width += e.xOffset - maxX;
       e.xOffset = maxX;
-    }
-  }
+    }*/
   
-  eventsInRenderOrder = EV;
+  eventsInRenderOrder = [ ...bgEvents, ...EV];
 /*
   let maxNumCols = 1;
   for (let i = 0; i < eventsInRenderOrder.length; ++i) {
