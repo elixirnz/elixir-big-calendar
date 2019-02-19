@@ -74,7 +74,7 @@ function sortByRender(events) {
   return sorted
 }
 
-function alignEvents(EV) {
+function alignEvents(EV, { eventOverlapWidth }) {
 
 
   const playTetrisWithEvents = EV => {
@@ -255,15 +255,8 @@ function alignEvents(EV) {
   markStretchableEvents(eventsByLevel, localPeaks)
 
 
-  const calculateDimensions = (EV, eventsByLevel) => {
+  const calculateDimensions = (EV, eventsByLevel, eventOverlapWidth) => {
     const numLevels = Object.keys(eventsByLevel).length
-
-    let overlapWidth = 0 * 0.2;
-
-    for (let ev of EV) {
-      ev.width = (100/numLevels);
-      ev.xOffset = (100/numLevels*(1-overlapWidth)) * ev.level;
-    }
 
     for (let curLevel = 0; curLevel < numLevels; ++curLevel) {
       const events = eventsByLevel[curLevel]
@@ -273,25 +266,43 @@ function alignEvents(EV) {
           const s = 1 + ev.numLevelsToStretch / ev.localPeakHeight;
 
           ev.width = (100/numLevels) * s;
-          ev.xOffset = (100/numLevels*(1-overlapWidth)) * ev.level * s;
+
+          if (curLevel == 0) {
+            ev.xOffset = 0;
+          } else {
+
+            let maxXOffset = 0;
+            for (let p of ev.parents) {
+              maxXOffset = Math.max(maxXOffset, p.xOffset + p.width*(1-eventOverlapWidth))
+            }
+
+            ev.xOffset = maxXOffset;
+          }
 
           // propagate localPeakHeight correctly back to top
           for (let c of ev.children) {
             c.localPeakHeight = ev.localPeakHeight;
+          }
+        } else {
+          ev.width = (100/numLevels);
+
+          if (curLevel == 0) {
+            ev.xOffset = 0;
+          } else {
+            ev.xOffset = (100/numLevels*(1-eventOverlapWidth)) * ev.level;
           }
         }
       }
     }
   }
 
-  calculateDimensions(EV, eventsByLevel);
+  calculateDimensions(EV, eventsByLevel, eventOverlapWidth);
 
   return EV
 }
 
 function getStyledEvents({ events, ...props }) {
  
-
   const proxies = events.map(event => new Event(event, props))
   let eventsInRenderOrder = sortByRender(proxies)
 
@@ -307,7 +318,9 @@ function getStyledEvents({ events, ...props }) {
 
   // TETRIS DOWN EVENTS
 
-  if (EV.length > 0) EV = alignEvents(EV)
+  if (EV.length > 0) EV = alignEvents(EV, {
+    eventOverlapWidth: props.eventOverlapWidth || 0
+  })
 
   // background events span 0 to 100
   const bgEvents = eventsInRenderOrder.filter(e => (e.data && e.data.$rendering === 'background'))
@@ -315,83 +328,8 @@ function getStyledEvents({ events, ...props }) {
     e.xOffset = 0;
     e.width = 100;
   }
-
-  /*for (let e of EV) {
-    e.xOffset = 20 * e.level;
-    e.width = 20;
-    //e.xOffset = (100 / e.numCols) * e.colIndex;
-    //e.width = (100 / e.numCols)
-
-  /*  // stretch events to the right
-    const rightNeighbor = EV.find(cev => cev.intersects(e) != NOINT && cev.colIndex > e.colIndex)
-    if (!rightNeighbor) {
-      e.width = (100 - e.xOffset)
-    }
-
-    // stretch events to the left
-    const leftNeighbors = EV.filter(cev => cev.intersects(e) != NOINT && cev.colIndex < e.colIndex)
-    let maxX = 0;
-    for (let leftEvent of leftNeighbors) {
-      maxX = Math.max(maxX, leftEvent.xOffset + leftEvent.width)
-    }
-    if (maxX < e.xOffset) {
-      e.width += e.xOffset - maxX;
-      e.xOffset = maxX;
-    }*/
   
   eventsInRenderOrder = [ ...bgEvents, ...EV];
-/*
-  let maxNumCols = 1;
-  for (let i = 0; i < eventsInRenderOrder.length; ++i) {
-    const ev = eventsInRenderOrder[ i ]
-    const others = eventsInRenderOrder.filter(e => intersects(ev, e) == LATER)
-    if (others.length + 1 > maxNumCols)
-      maxNumCols = others.length + 1;
-  }
-
-  let cols = new Array(maxNumCols);
-  for (let i = 0; i < maxNumCols; ++i) {
-    cols[i] = []
-  }
-
-  for (let i = 0; i < eventsInRenderOrder.length; ++i) {
-    const ev = eventsInRenderOrder[ i ]
-    const others = eventsInRenderOrder.filter(e => intersects(ev, e) == LATER)
-    if (others.length > 0) {
-      ev.xOffset = (100/(others.length+1));
-    } else {
-      cols[0].push(ev)
-    }
-  }
-
-  for (let i = 0; i < eventsInRenderOrder.length; ++i) {
-    const ev = eventsInRenderOrder[ i ]
-
-    if (ev.data && ev.data.$rendering === 'background') {
-      ev.xOffset = 0; ev.width = 100;  
-      continue;
-    }
-
-    ev.width = 100 / maxNumCols
-    
-    /*const others = eventsInRenderOrder.filter(e => (e.start < ev.start) && intersects(ev, e) != 0)
-    if (others.length > 0) {
-      for (let o of others) {
-        if (intersects(o, ev) == 
-      }
-      /*for (let o of others) {
-        o.numCols = (o.numCols || 1)+1
-        o.col     = o.col || 0;
-        o.width   = (100/o.numCols);
-        o.xOffset = (100/o.numCols) * o.col;
-      }
-      ev.numCols = others.length + 1;
-      ev.col = others.length;
-      ev.width = 100 / ev.numCols;
-      ev.xOffset = (100 / ev.numCols) * ev.col*/
-    //}
-
-  //}
 
   // Return the original events, along with their styles.
   return eventsInRenderOrder.map(event => ({

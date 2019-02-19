@@ -157,149 +157,134 @@ export default [
     title: 'A/a1',
     start: new Date('2015-04-01T05:15:00Z'),
     end: new Date('2015-04-01T06:45:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'A/a2',
     start: new Date('2015-04-01T05:15:00Z'),
     end: new Date('2015-04-01T06:45:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'A/b',
     start: new Date('2015-04-01T05:15:00Z'),
     end: new Date('2015-04-01T06:45:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'A/c',
     start: new Date('2015-04-01T05:15:00Z'),
     end: new Date('2015-04-01T05:45:00Z'),
-    desc: 'All embedding',
   },
 
 
 
   {
     id: idc++,
-    title: 'AAA 2',
+    title: 'BTC',
     start: new Date('2015-04-01T06:30:00Z'),
-    end: new Date('2015-04-01T08:00:00Z'),
-    desc: 'All embedding',
+    end: new Date('2015-04-01T07:00:00Z'),
   },
   {
     id: idc++,
-    title: 'AAA 2',
+    title: 'RFE 2',
     start: new Date('2015-04-01T06:00:00Z'),
     end: new Date('2015-04-01T06:30:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
-    title: 'AAA 2',
+    title: 'VBB 2',
     start: new Date('2015-04-01T06:45:00Z'),
     end: new Date('2015-04-01T07:15:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'BACKGROUND EVENT',
     start: new Date('2015-04-01T07:15:00Z'),
     end: new Date('2015-04-01T07:45:00Z'),
-    desc: 'All embedding',
     $rendering: 'background'
   },
   {
     id: idc++,
-    title: 'AAA 4',
+    title: 'TRZ 4',
     start: new Date('2015-04-01T07:30:00Z'),
     end: new Date('2015-04-01T08:00:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
-    title: 'AAA 5',
+    title: 'MTC 5',
     start: new Date('2015-04-01T07:45:00Z'),
     end: new Date('2015-04-01T08:15:00Z'),
-    desc: 'All embedding',
   },
  /* {
     id: idc++,
     title: 'AAA 5/b',
     start: new Date('2015-04-01T07:45:00Z'),
     end: new Date('2015-04-01T08:15:00Z'),
-    desc: 'All embedding',
   },*/
   {
     id: idc++,
     title: 'AAA 6',
     start: new Date('2015-04-01T08:00:00Z'),
     end: new Date('2015-04-01T08:30:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'ABC',
     start: new Date('2015-04-01T07:00:00Z'),
     end: new Date('2015-04-01T07:15:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
     title: 'ABC2',
     start: new Date('2015-04-01T07:00:00Z'),
     end: new Date('2015-04-01T07:30:00Z'),
-    desc: 'All embedding',
   },
 
 
 
   {
     id: idc++,
-    title: 'DDBB',
+    title: 'DDB',
     start: new Date('2015-04-01T05:15:00Z'),
-    end: new Date('2015-04-01T07:30:00Z'),
-    desc: 'All embedding',
+    end: new Date('2015-04-01T09:30:00Z'),
   },
 
-
+  {
+    id: idc++,
+    title: 'RVC',
+    start: new Date('2015-04-01T07:15:00Z'),
+    end: new Date('2015-04-01T08:30:00Z'),
+  },
 
   {
     id: idc++,
     title: 'AAA 4',
     start: new Date('2015-04-01T08:30:00Z'),
     end: new Date('2015-04-01T09:00:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
-    title: 'AAA 5',
+    title: 'TTC',
     start: new Date('2015-04-01T08:45:00Z'),
     end: new Date('2015-04-01T09:15:00Z'),
-    desc: 'All embedding',
   },
   {
     id: idc++,
-    title: 'AAA 5',
+    title: 'XVB',
     start: new Date('2015-04-01T08:45:00Z'),
     end: new Date('2015-04-01T09:15:00Z'),
-    desc: 'All embedding',
   },
  /* {
     id: idc++,
     title: 'AAA 5/b',
     start: new Date('2015-04-01T07:45:00Z'),
     end: new Date('2015-04-01T08:15:00Z'),
-    desc: 'All embedding',
   },*/
   {
     id: idc++,
-    title: 'AAA 6',
+    title: 'KKC',
     start: new Date('2015-04-01T09:00:00Z'),
     end: new Date('2015-04-01T09:30:00Z'),
-    desc: 'All embedding',
   },
 ]

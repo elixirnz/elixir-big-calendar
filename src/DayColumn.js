@@ -167,6 +167,7 @@ class DayColumn extends React.Component {
       startAccessor,
       titleAccessor,
       tooltipAccessor,
+      eventOverlapWidth
     } = this.props
 
     let styledEvents = DayEventLayout.getStyledEvents({
@@ -174,6 +175,7 @@ class DayColumn extends React.Component {
       startAccessor,
       endAccessor,
       slotMetrics: this.slotMetrics,
+      eventOverlapWidth
     })
 
     return styledEvents.map(({ event, style }, idx) => {
