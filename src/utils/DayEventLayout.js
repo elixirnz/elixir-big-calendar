@@ -257,7 +257,7 @@ function alignEvents(EV, { eventOverlapWidth }) {
 
   const calculateDimensions = (EV, eventsByLevel, eventOverlapWidth) => {
     const numLevels = Object.keys(eventsByLevel).length
-
+    
     for (let curLevel = 0; curLevel < numLevels; ++curLevel) {
       const events = eventsByLevel[curLevel]
 
@@ -265,7 +265,7 @@ function alignEvents(EV, { eventOverlapWidth }) {
         if (ev.stretchable) {
           const s = 1 + ev.numLevelsToStretch / ev.localPeakHeight;
 
-          ev.width = (100/numLevels) * s;
+          ev.width = (100/numLevels) * s * (1+eventOverlapWidth);
 
           if (curLevel == 0) {
             ev.xOffset = 0;
@@ -277,6 +277,9 @@ function alignEvents(EV, { eventOverlapWidth }) {
             }
 
             ev.xOffset = maxXOffset;
+            if (ev.xOffset + ev.width > 100) {
+              ev.width = 100 - ev.xOffset;
+            }
           }
 
           // propagate localPeakHeight correctly back to top
@@ -284,12 +287,18 @@ function alignEvents(EV, { eventOverlapWidth }) {
             c.localPeakHeight = ev.localPeakHeight;
           }
         } else {
-          ev.width = (100/numLevels);
+          ev.width = (100/numLevels) * (1+eventOverlapWidth);
 
           if (curLevel == 0) {
             ev.xOffset = 0;
           } else {
-            ev.xOffset = (100/numLevels*(1-eventOverlapWidth)) * ev.level;
+            
+            let maxXOffset = 0;
+            for (let p of ev.parents) {
+              maxXOffset = Math.max(maxXOffset, p.xOffset + p.width*(1-eventOverlapWidth))
+            }
+
+            ev.xOffset = maxXOffset;
           }
         }
       }
