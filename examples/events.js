@@ -311,4 +311,10 @@ export default [
     start: new Date('2015-04-01T09:00:00Z'),
     end: new Date('2015-04-01T09:30:00Z'),
   },
+  {
+    id: idc++,
+    title: 'GFG',
+    start: new Date('2015-04-01T09:30:00Z'),
+    end: new Date('2015-04-01T09:15:00Z'),
+  },
 ]

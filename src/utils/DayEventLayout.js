@@ -277,9 +277,6 @@ function alignEvents(EV, { eventOverlapWidth }) {
             }
 
             ev.xOffset = maxXOffset;
-            if (ev.xOffset + ev.width > 100) {
-              ev.width = 100 - ev.xOffset;
-            }
           }
 
           // propagate localPeakHeight correctly back to top
@@ -300,6 +297,10 @@ function alignEvents(EV, { eventOverlapWidth }) {
 
             ev.xOffset = maxXOffset;
           }
+        }
+
+        if (ev.xOffset + ev.width > 100) {
+          ev.width = 100 - ev.xOffset;
         }
       }
     }

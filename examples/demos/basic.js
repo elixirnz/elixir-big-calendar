@@ -12,7 +12,7 @@ let Basic = () => (
     defaultView={'day'}
     eventOverlapWidth={0.25}
     min={new Date('2011-01-01T06:15:00Z')}
-    max={new Date('2011-01-01T10:30:00Z')}
+    max={new Date('2011-01-01T11:30:00Z')}
     step={15}
     timeslots={1}
     showMultiDayTimes
