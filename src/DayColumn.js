@@ -385,7 +385,7 @@ class DayColumn extends React.Component {
   }
 
   _select = (...args) => {
-    console.log("_select, args:", args)
+    //console.log("_select, args:", args)
     notify(this.props.onSelectEvent, args)
   }
 

@@ -187,7 +187,7 @@ function alignEvents(EV, { eventOverlapWidth }) {
 
   const localPeaks = assemblyIntersectionGraph(eventsByLevel)
 
-  console.log(eventsByLevel)
+  //console.log(eventsByLevel)
 
   const intersectWithUpperLevelEvents = (event, currentLevel, eventsByLevel) => {
     const numLevels = Object.keys(eventsByLevel).length
