@@ -112,9 +112,9 @@ export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
       return {
         top,
         height: (rangeEndMin / totalMin) * 100 - top,
-        start: positionFromDate(rangeStart),
+        start: rangeStartMin,
         startDate: rangeStart,
-        end: positionFromDate(rangeEnd),
+        end: rangeEndMin,
         endDate: rangeEnd,
       }
     },
