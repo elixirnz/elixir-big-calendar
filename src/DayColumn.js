@@ -1,15 +1,15 @@
-import React, { createRef } from 'react'
-import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import React, { createRef } from 'react'
 
 import Selection, { getBoundsForNode, isEvent } from './Selection'
 import * as TimeSlotUtils from './utils/TimeSlots'
 import { isSelected } from './utils/selection'
 
-import { notify } from './utils/helpers'
-import * as DayEventLayout from './utils/DayEventLayout'
-import TimeSlotGroup from './TimeSlotGroup'
 import TimeGridEvent from './TimeGridEvent'
+import TimeSlotGroup from './TimeSlotGroup'
+import * as DayEventLayout from './utils/DayEventLayout'
+import { notify } from './utils/helpers'
 import { DayLayoutAlgorithmPropType } from './utils/propTypes'
 
 import DayColumnWrapper from './DayColumnWrapper'
@@ -195,6 +195,7 @@ class DayColumn extends React.Component {
       timeslots,
       dayLayoutAlgorithm,
       resizable,
+      eventOverlapWidth,
     } = this.props
 
     const { slotMetrics } = this
@@ -206,6 +207,7 @@ class DayColumn extends React.Component {
       slotMetrics,
       minimumStartDifference: Math.ceil((step * timeslots) / 2),
       dayLayoutAlgorithm,
+      eventOverlapWidth,
     })
 
     return styledEvents.map(({ event, style }, idx) => {

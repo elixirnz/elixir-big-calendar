@@ -1,9 +1,11 @@
 /*eslint no-unused-vars: "off"*/
 
-import overlap from './layout-algorithms/overlap'
 import noOverlap from './layout-algorithms/no-overlap'
+import overlap from './layout-algorithms/overlap'
+import tetris from './layout-algorithms/tetris'
 
 const DefaultAlgorithms = {
+  tetris: tetris,
   overlap: overlap,
   'no-overlap': noOverlap,
 }

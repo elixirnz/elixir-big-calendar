@@ -127,9 +127,9 @@ export function getSlotMetrics({
       return {
         top,
         height: (rangeEndMin / (step * numSlots)) * 100 - top,
-        start: positionFromDate(rangeStart),
+        start: rangeStartMin,
         startDate: rangeStart,
-        end: positionFromDate(rangeEnd),
+        end: rangeEndMin,
         endDate: rangeEnd,
       }
     },
