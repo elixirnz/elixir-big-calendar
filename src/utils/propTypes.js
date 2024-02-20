@@ -41,6 +41,6 @@ export let views = PropTypes.oneOfType([
 ])
 
 export const DayLayoutAlgorithmPropType = PropTypes.oneOfType([
-  PropTypes.oneOf(['overlap', 'no-overlap']),
+  PropTypes.oneOf(['overlap', 'no-overlap','tetris']),
   PropTypes.func,
 ])
