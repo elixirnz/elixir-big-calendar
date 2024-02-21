@@ -28,7 +28,6 @@ export function getStyledEvents({
   if (dayLayoutAlgorithm in DefaultAlgorithms)
     algorithm = DefaultAlgorithms[dayLayoutAlgorithm]
 
-  console.log("dayLayoutAlgorithm", dayLayoutAlgorithm)
   if (!isFunction(algorithm)) {
     // invalid algorithm
     return []

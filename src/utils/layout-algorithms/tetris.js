@@ -347,6 +347,5 @@ export default function getStyledEvents({ events, ...props }) {
       xOffset: event.xOffset,
     },
   }))
-  console.info('events(tetris): ', res)
   return res
 }
